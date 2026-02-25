@@ -1,0 +1,8 @@
+- [ ] Jogador com 3 vidas
+- [ ] Tiros do jogador/inimigos
+- [ ] Naves comuns
+- [ ] Nave mãe
+- [ ] Incremento de velocidade dos inimigos quanto mais próximo
+- [ ] Pontuação
+- [ ] Cena de vitória
+- [ ] Cena de derrota
