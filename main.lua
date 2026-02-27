@@ -13,6 +13,8 @@ WINDOW_HEIGHT = 1000
 VIRTUAL_WIDTH = 225
 VIRTUAL_HEIGHT = 300
 
+PLAYER_SPEED = 120
+
 local startTransitionActive = false
 local startTransitionTimer = 0
 local startTransitionTargetState = nil
@@ -53,10 +55,17 @@ function love.load()
 
     currentState = GameState.START
 
-    local spriteScale = 0.3
-    local spriteWidth, spriteHeight = Sprites.getDimensions()
-    player = Player(VIRTUAL_WIDTH - spriteWidth * spriteScale, VIRTUAL_HEIGHT - 10 - spriteHeight)
+    -- local spriteScale = 0.3
+    -- local spriteWidth, spriteHeight = Sprites.getDimensions()
+    playerShip = Player(0, 0)
+    playerShip.x = (VIRTUAL_WIDTH / 2)
+    -- print("player.x = " .. player.x)
+    -- print("spriteWidth = " .. spriteWidth)
 
+    playerShip.y = (VIRTUAL_HEIGHT - playerShip.height * playerShip.scale)
+    -- print("player.y = " .. player.y)
+    -- print("player.height = " .. player.height)
+    -- print("spriteHeight = " .. spriteHeight)
     Utils.initializeStars()
 end
 
@@ -74,6 +83,18 @@ function love.update(dt)
             currentState = startTransitionTargetState
             startTransitionTargetState = nil
         end
+    end
+
+    if currentState ~= GameState.START then
+        if love.keyboard.isDown('a') and not love.keyboard.isDown('d') then
+            playerShip.dx = -PLAYER_SPEED
+        elseif love.keyboard.isDown('d') and not love.keyboard.isDown('a') then
+            playerShip.dx = PLAYER_SPEED
+        else
+            playerShip.dx = 0
+        end
+
+        playerShip:update(dt)
     end
 end
 
@@ -115,7 +136,7 @@ function love.draw()
     end
 
     if currentState ~= GameState.START then
-        player:render()
+        playerShip:render()
     end
 
     push:finish()
