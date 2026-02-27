@@ -11,13 +11,7 @@
 
 GameState = {
     START = 'start',
-    DEMO = 'demo',
-    SERVE = 'serve',
-    STAGE_1 = 'stage-1',
-    STAGE_1_PASSED = 'stage-1-passed',
-    STAGE_2 = 'stage-2',
-    DONE = 'done',
-    OVER = 'over'
+    TESTE_1 = 'teste-1' -- estado pra testar movimentação do jogador
 }
 
 -- Make the table read-only to prevent accidental modifications

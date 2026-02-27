@@ -1,6 +1,6 @@
 {
-  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "runtime.version": "LuaJIT",
+  "runtime.path": ["?.lua", "?/init.lua", "/opt/homebrew/bin/?.lua"],
   "runtime.special": {
     "love.filesystem.load": "loadfile"
   },
