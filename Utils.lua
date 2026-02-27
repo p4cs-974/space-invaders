@@ -89,4 +89,32 @@ function Utils.drawSplashScreen(starsAlpha, logoAlpha, logoYOffset)
     Utils.drawLogo(logoAlpha, logoYOffset)
 end
 
+--[[
+    Draw collision boxes for any objects that expose one.
+    Priority:
+    1) object:drawBoundingBox()
+    2) object:getCollisionRect() -> x, y, w, h
+]]
+function Utils.drawCollisionBoxes(objects)
+    if not objects then
+        return
+    end
+
+    love.graphics.setColor(0.3, 1, 0.3, 1)
+
+    for i = 1, #objects do
+        local object = objects[i]
+        if object then
+            if object.drawBoundingBox then
+                object:drawBoundingBox()
+            elseif object.getCollisionRect then
+                local x, y, w, h = object:getCollisionRect()
+                love.graphics.rectangle('line', x, y, w, h)
+            end
+        end
+    end
+
+    love.graphics.setColor(1, 1, 1, 1)
+end
+
 return Utils
