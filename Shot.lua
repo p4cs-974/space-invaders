@@ -1,49 +1,68 @@
 Shot = Class {}
-local SHOT_HIT_OFFSET_X = 43
-local SHOT_HIT_OFFSET_Y = 29
-local SHOT_HIT_WIDTH = 26
-local SHOT_HIT_HEIGHT = 45
 
-function Shot:init(centerX, startY)
-    self.speed = 220
-    self.sprite = Sprites.R3C7
+function Shot:init(centerX, startY, direction, speed, owner)
+    self.direction = direction or -1
+    self.speed = speed or 220
+    self.owner = owner or 'player'
+    self.scale = SHOT_SCALE
+    self.remove = false
+    self.impactDuration = 0.08
+    self.impactTimer = 0
+    self.inImpact = false
 
     self.width, self.height = Sprites.getDimensions()
-    self.drawX = centerX - (self.width * SHOT_SCALE) / 2
+    self.drawX = centerX - (self.width * self.scale) / 2
     self.drawY = startY
 
-    -- Opaque pixel bounds for R3C7 inside the 110x127 tile.
-    self.hitOffsetX = SHOT_HIT_OFFSET_X
-    self.hitOffsetY = SHOT_HIT_OFFSET_Y
-    self.hitWidth = SHOT_HIT_WIDTH
-    self.hitHeight = SHOT_HIT_HEIGHT
-
-    self.remove = false
+    -- Player and enemy shots share the same projectile sprite.
+    self.sprite = Sprites.R3C7
 end
 
-function Shot.getSpawnDrawYForTopCollision(topCollisionY)
-    return topCollisionY - (SHOT_HIT_OFFSET_Y + SHOT_HIT_HEIGHT) * SHOT_SCALE
+function Shot:impact()
+    if self.inImpact then
+        return
+    end
+
+    self.inImpact = true
+    self.impactTimer = self.impactDuration
+    self.sprite = Sprites.R3C8
 end
 
 function Shot:update(dt)
-    self.drawY = self.drawY - self.speed * dt
+    if self.inImpact then
+        self.impactTimer = self.impactTimer - dt
+        if self.impactTimer <= 0 then
+            self.remove = true
+        end
+        return
+    end
 
-    if self.drawY + (self.height * SHOT_SCALE) < 0 then
-        self.remove = true
+    self.drawY = self.drawY + self.direction * self.speed * dt
+
+    if self.drawY + (self.height * self.scale) < 0 then
+        self:impact()
+    end
+    if self.drawY > VIRTUAL_HEIGHT then
+        self:impact()
     end
 end
 
+function Shot:canHit()
+    return not self.inImpact
+end
+
 function Shot:getCollisionRect()
-    local x = self.drawX + self.hitOffsetX * SHOT_SCALE
-    local y = self.drawY + self.hitOffsetY * SHOT_SCALE
-    local w = self.hitWidth * SHOT_SCALE
-    local h = self.hitHeight * SHOT_SCALE
+    local x = self.drawX + self.width * self.scale * 0.38
+    local y = self.drawY + self.height * self.scale * 0.2
+    local w = self.width * self.scale * 0.24
+    local h = self.height * self.scale * 0.52
     return x, y, w, h
 end
 
 function Shot:render()
     love.graphics.setColor(1, 1, 1, 1)
-    Sprites.draw(self.sprite, self.drawX, self.drawY, SHOT_SCALE)
+    Sprites.draw(self.sprite, self.drawX, self.drawY, self.scale)
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 function Shot:drawBoundingBox()

@@ -11,7 +11,10 @@
 
 GameState = {
     START = 'start',
-    TESTE_1 = 'teste-1' -- estado pra testar movimentação do jogador
+    START_TRANSITION = 'start_transition',
+    PLAYING = 'playing',
+    VICTORY = 'victory',
+    DEFEAT = 'defeat'
 }
 
 -- Make the table read-only to prevent accidental modifications
